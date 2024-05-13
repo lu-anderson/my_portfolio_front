@@ -14,7 +14,7 @@ function Menu(){
           flex-col gap-4
           items-center justify-center
           bg-bg2 
-          fixed bottom-0 left-0 
+          fixed bottom-0 right-0 
           transition-all
           duration-[200ms]
           overflow-hidden
@@ -57,7 +57,7 @@ function Menu(){
           Sobre mim
         </Link>
       </nav>
-      <div className="fixed bottom-10 left-8">      
+      <div className="fixed bottom-10 right-8">      
         <button 
           className="w-10 h-12 relative"
           onClick={() => setShowMenu(!showMenu)}

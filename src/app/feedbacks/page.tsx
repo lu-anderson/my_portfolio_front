@@ -1,31 +1,18 @@
+import { Feedbacks } from "@/types/types";
 import Image from "next/image";
 import Link from "next/link";
 
-const feedbacks = [
-  {
-    title: 'Programar uma "Roda da Vida" em formato de Estrela',
-    feedback: 'Excelente profissional! Dedicado, rápido, compreensivo e super profissional. Contratarei novamente com certeza.',
-    logoPlatform: '/assets/platforms/workana.png',
-    author: 'Felipe Moreira',
-    href: 'https://www.workana.com/freelancer/2079ebb35df0fad6f7e80f4edeb6feee'
-  },
-  {
-    title: 'Script para validações de ações no Instagram',
-    feedback: 'Ótimo programador e muito atencioso! Recomendo a todos do Workana, resolveu todos meus problemas.',
-    logoPlatform: '/assets/platforms/workana.png',
-    author: 'Gabriel da Silveira',
-    href: 'https://www.workana.com/freelancer/2079ebb35df0fad6f7e80f4edeb6feee'
-  }
-];
+const ROUTE_AND_QUERY = '/api/feedbacks?populate=logoPlatform';
 
-type Props = {
-  title: string;
-  feedback: string;
-  logoPlatform: string;
-  href: string;
+async function getFeedbacks(): Promise<Feedbacks> {
+  const response = await fetch(process.env.NEXT_PUBLIC_CMS_URL + ROUTE_AND_QUERY);
+  const data = await response.json();
+  return data;
 }
 
-function Feedbacks() {
+async function Feedbacks() {
+  const { data: feedbacks } = await getFeedbacks();
+
   return (
     <>
       <header className="flex flex-col gap-5">
@@ -38,41 +25,49 @@ function Feedbacks() {
       </header>
       <main>
         <section className="flex flex-col gap-5 items-center">
-          {feedbacks.map((feedback, index) => (
-            <div
-              key={index}
-              className="bg-bg2 rounded-md p-3"
-            >
-              <h3 className="font-bold">
-                {feedback.title}
-              </h3>
-              <span className="font-bold text-2xl text-secondary">,,</span>
-              <p>
-                {feedback.feedback}
+          {feedbacks.map((feedback, index) => {
+            const {
+              attributes: { title, feedback: description, author, href, logoPlatform }
+            } = feedback;
+
+            const { data: { attributes: { formats: { thumbnail } } } } = logoPlatform;
+
+            return (
+              <div
+                key={index}
+                className="bg-bg2 rounded-md p-3"
+              >
+                <h3 className="font-bold">
+                  {title}
+                </h3>
                 <span className="font-bold text-2xl text-secondary">,,</span>
-              </p>
-              <div className="mt-2">
-                <Link
-                  href={feedback.href}
-                  className="flex gap-2 items-center"
-                  target="_blank"
-                >
-                  <Image
-                    src={feedback.logoPlatform}
-                    width={20}
-                    height={20}
-                    alt="Logo da plataforma"
-                  />
-                  {feedback.author + ' '}
-                  <span
-                    className="text-secondary"
+                <p>
+                  {description}
+                  <span className="font-bold text-2xl text-secondary">,,</span>
+                </p>
+                <div className="mt-2">
+                  <Link
+                    href={href}
+                    className="flex gap-2 items-center"
+                    target="_blank"
                   >
-                    no Workana
-                  </span>
-                </Link>
+                    <Image
+                      src={`${process.env.NEXT_PUBLIC_CMS_URL}${thumbnail.url}`}
+                      width={20}
+                      height={20}
+                      alt="Logo da plataforma"
+                    />
+                    {author + ' '}
+                    <span
+                      className="text-secondary"
+                    >
+                      no Workana
+                    </span>
+                  </Link>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </section>
       </main>
     </>

@@ -24,6 +24,7 @@ function TechsPage() {
         </p>
       </header>
       <main>
+        <iframe src="https://player.vimeo.com/video/905745816?badge=0&autopause=0&player_id=0&app_id=58479&autoplay=1&auto_play=1&rel=0" />
         <ul className="flex flex-col gap-5 items-center">
           {techs.map((tech, index) => (
             <li
